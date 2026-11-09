@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default-deny all collections unless explicitly allowed
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Healthcheck / Connection test document
+    match /test/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Security Helper Primitives
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation Blueprint for Fragrance Entity
+    function isValidFragrance(data) {
+      return data.keys().hasAll(['id', 'name', 'category', 'priceMad', 'image']) &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+        data.name is string && data.name.size() > 0 && data.name.size() <= 150 &&
+        data.category in ['For Him', 'For Her', 'Unisex'] &&
+        data.priceMad is number && data.priceMad >= 0 &&
+        data.image is string && data.image.size() <= 2000000 &&
+        (!('decant10PriceMad' in data) || data.decant10PriceMad == null || (data.decant10PriceMad is number && data.decant10PriceMad >= 0)) &&
+        (!('volumeLabel' in data) || data.volumeLabel == null || (data.volumeLabel is string && data.volumeLabel.size() <= 50)) &&
+        (!('isPack' in data) || data.isPack is bool) &&
+        (!('isDecantOnly' in data) || data.isDecantOnly is bool) &&
+        (!('originalPriceMad' in data) || data.originalPriceMad == null || (data.originalPriceMad is number && data.originalPriceMad >= 0));
+    }
+
+    // Collection: /fragrances/{fragranceId}
+    // Public catalog readable by all devices, visitors, and customers
+    match /fragrances/{fragranceId} {
+      allow read: if true;
+      allow create: if isValidId(fragranceId) && isValidFragrance(incoming()) && incoming().id == fragranceId;
+      allow update: if isValidId(fragranceId) && isValidFragrance(incoming()) && incoming().id == existing().id;
+      allow delete: if isValidId(fragranceId);
+    }
+  }
+}

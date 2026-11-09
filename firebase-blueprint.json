@@ -1,0 +1,110 @@
+{
+  "entities": {
+    "fragrance": {
+      "title": "Fragrance",
+      "description": "A luxury fragrance product, 10ml decant, or curated coffret pack in the Salim Fragrance catalogue.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the fragrance product",
+          "maxLength": 128
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL-safe slug",
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the perfume or pack",
+          "maxLength": 150
+        },
+        "category": {
+          "type": "string",
+          "description": "Target audience category",
+          "enum": ["For Him", "For Her", "Unisex"]
+        },
+        "priceMad": {
+          "type": "number",
+          "description": "Price in Moroccan Dirhams (MAD)"
+        },
+        "decant10PriceMad": {
+          "type": "number",
+          "description": "Price in MAD for 10ml decant if available"
+        },
+        "volumeLabel": {
+          "type": "string",
+          "description": "Bottle volume specification e.g. 100ml",
+          "maxLength": 50
+        },
+        "isPack": {
+          "type": "boolean",
+          "description": "Whether this item is a multi-perfume pack or coffret"
+        },
+        "isDecantOnly": {
+          "type": "boolean",
+          "description": "Whether this item is strictly sold as a 10ml decant"
+        },
+        "originalPriceMad": {
+          "type": "number",
+          "description": "Original crossed-out price in MAD before pack discount"
+        },
+        "badge": {
+          "type": "string",
+          "description": "Optional product highlight badge",
+          "enum": ["Best Seller", "New", ""]
+        },
+        "featuredOrder": {
+          "type": "number",
+          "description": "Ordering priority for featured collection"
+        },
+        "image": {
+          "type": "string",
+          "description": "Primary high-resolution image URL or path",
+          "maxLength": 2000000
+        },
+        "character": {
+          "type": "object",
+          "description": "Localized short character description"
+        },
+        "description": {
+          "type": "object",
+          "description": "Localized full story and olfactory description"
+        },
+        "notes": {
+          "type": "object",
+          "description": "Localized top, heart, and base olfactory notes"
+        },
+        "longevity": {
+          "type": "object",
+          "description": "Localized performance and longevity description"
+        },
+        "sillage": {
+          "type": "object",
+          "description": "Localized sillage and projection description"
+        },
+        "packSummary": {
+          "type": "object",
+          "description": "Localized pack summary text"
+        },
+        "packContents": {
+          "type": "array",
+          "description": "List of localized item lines included in the pack"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update",
+          "maxLength": 64
+        }
+      },
+      "required": ["id", "name", "category", "priceMad", "image"]
+    }
+  },
+  "firestore": {
+    "/fragrances/{fragranceId}": {
+      "schema": "fragrance",
+      "description": "Publicly readable collection of all perfumes, 10ml decants, and packs synced in real time across all devices."
+    }
+  }
+}

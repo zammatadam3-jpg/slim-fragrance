@@ -1,0 +1,6 @@
+{
+  "name": "SLIM FRAGRANCE",
+  "description": "Maison de Parfum in Casablanca — Rare oud, black pepper, Damask rose. Long-lasting signature fragrances delivered across Morocco.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
